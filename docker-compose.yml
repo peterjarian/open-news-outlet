@@ -1,0 +1,11 @@
+services:
+    db:
+        image: postgres
+        restart: always
+        shm_size: 128mb
+        environment:
+            POSTGRES_USER: ono
+            POSTGRES_PASSWORD: insecure
+            POSTGRES_DB: ono
+        ports:
+            - '5432:5432'
