@@ -31,7 +31,7 @@ export const env = createEnv({
         NODE_ENV: process.env.NODE_ENV,
         BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
         RESEND_TOKEN: process.env.RESEND_TOKEN,
-        NEXT_PUBLIC_HTTP_HOST: process.env.HTTP_HOST,
+        NEXT_PUBLIC_HTTP_HOST: process.env.NEXT_PUBLIC_HTTP_HOST,
     },
     /**
      * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
