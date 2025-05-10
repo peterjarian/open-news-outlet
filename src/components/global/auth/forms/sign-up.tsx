@@ -3,10 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { AuthForm } from '../auth-form';
+import { AuthForm, SubmitButton } from '../auth-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 export const signUpFormSchema = z
     .object({
@@ -24,7 +23,12 @@ export const signUpFormSchema = z
         path: ['confirmPassword'],
     });
 
-export function SignUpForm({ onSubmit }: { onSubmit(values: z.infer<typeof signUpFormSchema>): void }) {
+export interface SignUpForm {
+    onSubmit(values: z.infer<typeof signUpFormSchema>): void;
+    pending: boolean;
+}
+
+export function SignUpForm({ onSubmit, pending }: SignUpForm) {
     const form = useForm<z.infer<typeof signUpFormSchema>>({
         resolver: zodResolver(signUpFormSchema),
         defaultValues: {
@@ -90,9 +94,7 @@ export function SignUpForm({ onSubmit }: { onSubmit(values: z.infer<typeof signU
                 )}
             />
 
-            <Button type="submit" className="w-full">
-                Sign up
-            </Button>
+            <SubmitButton pending={pending}>Sign in</SubmitButton>
         </AuthForm>
     );
 }

@@ -13,8 +13,11 @@ export function SignUp() {
     const router = useRouter();
 
     const [error, setError] = useState<string | null>(null);
+    const [pending, setPending] = useState(false);
 
     async function onSubmit({ name, email, password }: z.infer<typeof signUpFormSchema>) {
+        setPending(true);
+
         await authClient.signUp.email(
             {
                 name,
@@ -48,7 +51,7 @@ export function SignUp() {
                 {error && <AuthCardDescription>{error}</AuthCardDescription>}
             </CardHeader>
             <CardContent>
-                <SignUpForm onSubmit={onSubmit} />
+                <SignUpForm onSubmit={onSubmit} pending={pending} />
             </CardContent>
             <AuthCardFooter>
                 Already have an account?&nbsp;
