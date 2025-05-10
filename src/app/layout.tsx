@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Newsreader } from 'next/font/google';
 import './globals.css';
-import { NavBar } from '@/components/global/nav-bar';
-import { Footer } from '@/components/global/footer';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 const newsreader = Newsreader({
     subsets: ['latin'],
@@ -23,9 +22,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${newsreader.className} antialiased`}>
-                <NavBar />
-                <main className="px-4 md:px-6">{children}</main>
-                <Footer />
+                <NuqsAdapter>{children}</NuqsAdapter>
             </body>
         </html>
     );

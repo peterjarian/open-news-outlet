@@ -16,7 +16,7 @@ export default function NavBar() {
                 <LogoLink size="md" className="md:order-1" />
 
                 <Button variant="ghost" size="icon" className="md:hidden" asChild>
-                    <Link href="/sign-up">
+                    <Link href="/sign-in">
                         <IconWrapper icon={SignIn} className="size-6" />
                     </Link>
                 </Button>
@@ -32,7 +32,7 @@ export default function NavBar() {
                         </Link>
                     </Button>
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href="/sign-up">
+                        <Link href="/sign-in">
                             <IconWrapper icon={SignIn} className="size-6" />
                         </Link>
                     </Button>
