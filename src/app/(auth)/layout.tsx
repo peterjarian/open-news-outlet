@@ -10,6 +10,9 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     });
 
     if (session) {
+        // the user should verify their email first
+        if (!session.user.emailVerified) permanentRedirect('/verify-email');
+
         // if the user already has a session, we redirect to the account page
         permanentRedirect('/account');
     }
