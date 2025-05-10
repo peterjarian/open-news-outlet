@@ -20,22 +20,20 @@ export function SignIn() {
     async function onSubmit({ email, password }: z.infer<typeof signInFormSchema>) {
         setPending(true);
 
-        await authClient.signIn.email(
-            {
-                email,
-                password,
-                rememberMe: true,
-            },
-            {
-                onSuccess: () => {
-                    // on success we redirect the user to the homepage
-                    router.push('/');
-                },
-                onError: ({ error }) => {
-                    setError(error.message);
-                },
-            },
-        );
+        const { data, error } = await authClient.signIn.email({
+            email,
+            password,
+            rememberMe: true,
+        });
+
+        if (error) {
+            setError(error.message);
+            return;
+        }
+
+        // the user should first verify their email before continueing
+        if (!data.user.emailVerified) router.push('/verify-email');
+        else router.push('/');
     }
 
     return (
