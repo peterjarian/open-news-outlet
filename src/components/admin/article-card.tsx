@@ -41,7 +41,7 @@ export function AdminArticleCard({ article }: AdminArticleCardProps) {
           {/* Status Badge */}
           <span
             className={cn(
-              'absolute top-2 right-2 rounded px-2 py-0.5 text-xs font-medium capitalize',
+              'absolute top-2 right-2 rounded px-2 text-xs font-medium capitalize',
               getStatusStyle(article.status),
             )}
           >

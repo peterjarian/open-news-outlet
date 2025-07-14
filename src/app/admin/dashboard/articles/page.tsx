@@ -23,11 +23,22 @@ export default async function Page() {
       </AdminPageHeader>
       <AdminPageContainer>
         <ul className="grid grid-cols-2 gap-4">
-          {articles.map((article) => (
-            <li key={article.id}>
-              <AdminArticleCard article={article} />
+          {!articles.length ? (
+            <li className="col-span-2 flex items-center justify-center py-12">
+              <div className="text-center">
+                <p className="text-muted-foreground text-lg font-medium">No articles here</p>
+                <p className="text-muted-foreground mt-1 text-sm">
+                  Create your first article to get started
+                </p>
+              </div>
             </li>
-          ))}
+          ) : (
+            articles.map((article) => (
+              <li key={article.id}>
+                <AdminArticleCard article={article} />
+              </li>
+            ))
+          )}
         </ul>
       </AdminPageContainer>
     </>

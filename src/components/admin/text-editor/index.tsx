@@ -2,13 +2,13 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
 import { ToolBar, ToolBarSkeleton } from './tool-bar';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { type JSONContent } from '@tiptap/react';
 
 type TextEditorProps = {
-  content?: string;
+  content?: JSONContent;
   onChange(richText: string): void;
 };
 
@@ -16,7 +16,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
   const [isReady, setIsReady] = useState(false);
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [StarterKit],
     content,
     editorProps: {
       attributes: {
@@ -35,10 +35,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
 
   useEffect(() => {
     if (editor && content !== undefined) {
-      const currentContent = editor.getHTML();
-      if (currentContent !== content) {
-        editor.commands.setContent(content);
-      }
+      editor.commands.setContent(content);
     }
   }, [editor, content]);
 

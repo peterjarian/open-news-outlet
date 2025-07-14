@@ -24,12 +24,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     db.select().from(articleTable).where(eq(articleTable.slug, slug)).limit(1),
   );
 
-  if (error || !data) {
+  if (error) {
     console.log('[ARTICLES] Failed to fetch article', error);
-    notFound();
+    throw error;
   }
 
   const article = data[0];
+
+  if (!article) {
+    console.log('[ARTICLES] Article not found for slug:', slug);
+    notFound();
+  }
 
   return (
     <>

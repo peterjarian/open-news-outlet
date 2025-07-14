@@ -8,34 +8,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { TextEditor } from '@/components/admin/text-editor';
 import { InferSelectModel } from 'drizzle-orm';
 import { articleTable } from '@/lib/drizzle/schema';
-import { tryJSONParse } from '@/lib/try-json-parse';
-import { generateHTML, JSONContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { useEffect, useState } from 'react';
+import { type JSONContent } from '@tiptap/react';
 
 type ArticlePageClientProps = {
   article: InferSelectModel<typeof articleTable>;
 };
 
-function getInitialContent(content: string | null) {
-  if (!content) return '';
-
-  const res = tryJSONParse<JSONContent>(content);
-
-  if (res.isErr()) {
-    console.log('[WARNING] Failed to parse article content to HTML');
-    return content;
-  }
-
-  return generateHTML(res.value, [StarterKit]);
-}
-
 export function ArticlePageClient({ article }: ArticlePageClientProps) {
-  const [defaultContent, setDefaultContent] = useState('');
-
-  useEffect(() => {
-    setDefaultContent(getInitialContent(article.content));
-  }, [article.content]);
+  function parseContent(): JSONContent | undefined {
+    if (!article.content) return undefined;
+    return JSON.parse(article.content) as JSONContent;
+  }
 
   const handleSave = () => {
     // You'll implement the server action here
@@ -51,7 +34,6 @@ export function ArticlePageClient({ article }: ArticlePageClientProps) {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">{article.title}</h1>
-        <p className="text-muted-foreground">Edit article details and content</p>
       </div>
 
       <div className="grid gap-6">
@@ -105,7 +87,7 @@ export function ArticlePageClient({ article }: ArticlePageClientProps) {
           </CardHeader>
           <CardContent>
             <TextEditor
-              content={defaultContent}
+              content={parseContent()}
               onChange={(content) => console.log('Content changed:', content)}
             />
           </CardContent>
