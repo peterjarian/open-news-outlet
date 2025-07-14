@@ -1,22 +1,30 @@
-import { AnyPgColumn, pgTable, integer, text, timestamp, boolean } from 'drizzle-orm/pg-core';
+import {
+  AnyPgColumn,
+  pgTable,
+  integer,
+  text,
+  timestamp,
+  boolean,
+  serial,
+} from 'drizzle-orm/pg-core';
 
 export const categoryTable = pgTable('categories', {
-  id: integer().primaryKey(),
+  id: serial().primaryKey(),
   title: text().notNull(),
-  slug: text().unique(),
+  slug: text().unique().notNull(),
   parentId: integer().references((): AnyPgColumn => categoryTable.id),
 });
 
 export const articleTable = pgTable('articles', {
-  id: integer().primaryKey(),
-  title: text().notNull(),
+  id: serial().primaryKey(),
   slug: text().unique(),
+  title: text().notNull(),
   description: text().notNull(),
+  featuredImage: text().notNull(),
   content: text().notNull(),
   categoryId: integer().references(() => categoryTable.id),
   authorId: text().references(() => userTable.id),
   status: text('status').default('draft'),
-  featuredImage: text(),
   publishedAt: timestamp().defaultNow(),
   updatedAt: timestamp()
     .defaultNow()

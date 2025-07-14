@@ -26,9 +26,9 @@ import { CircleCheck } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import z from 'zod';
 import Countdown, { CountdownRendererFn } from 'react-countdown';
 import { useSearchParams } from 'next/navigation';
+import { LoginData, loginSchema } from '@/schemas/auth';
 
 function getErrorMessage(error: string) {
   switch (error) {
@@ -53,10 +53,6 @@ function ErrorDisplay({ showError }: { showError: boolean }) {
   );
 }
 
-const loginSchema = z.object({
-  email: z.email(),
-});
-
 const renderer: CountdownRendererFn = ({ total, completed }) => {
   if (completed) return null;
   const secs = Math.ceil(total / 1000);
@@ -69,16 +65,16 @@ export default function Page() {
   const [countdownDate, setCountdownDate] = useState<number | null>(null);
   const [showError, setShowError] = useState(true);
 
-  const form = useForm<z.infer<typeof loginSchema>>({
+  const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '' },
   });
 
-  async function handleSubmit({ email }: z.infer<typeof loginSchema>) {
+  async function handleSubmit({ email }: LoginData) {
     setIsSubmitting(true);
     setShowError(false);
 
-    const res = await sendMagicLink(email);
+    const res = await sendMagicLink({ email });
 
     if (res.error) {
       toast.error(res.error);
@@ -103,7 +99,7 @@ export default function Page() {
     }
 
     setIsSubmitting(true);
-    const res = await sendMagicLink(form.getValues().email);
+    const res = await sendMagicLink(form.getValues());
 
     if (res.error) {
       toast.error(res.error);

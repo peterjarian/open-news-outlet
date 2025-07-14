@@ -1,6 +1,6 @@
 {
-  "id": "a5002233-4f3c-41d1-853c-184737b0744e",
-  "prevId": "11daa8d5-33f2-4f40-a7ba-5f59114d1925",
+  "id": "52a84152-ec3a-4817-80c4-e3c04dc81df1",
+  "prevId": "3d75816d-4e51-4d37-86a5-2403639a7751",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -89,10 +89,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "account_user_id_session_id_fk": {
-          "name": "account_user_id_session_id_fk",
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
-          "tableTo": "session",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
@@ -115,14 +115,8 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "serial",
           "primaryKey": true,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
           "notNull": true
         },
         "slug": {
@@ -131,8 +125,20 @@
           "primaryKey": false,
           "notNull": false
         },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "description": {
           "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "featuredImage": {
+          "name": "featuredImage",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -148,6 +154,19 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "authorId": {
+          "name": "authorId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'draft'"
         },
         "publishedAt": {
           "name": "publishedAt",
@@ -178,6 +197,19 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "articles_authorId_user_id_fk": {
+          "name": "articles_authorId_user_id_fk",
+          "tableFrom": "articles",
+          "tableTo": "user",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -200,7 +232,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
@@ -214,7 +246,7 @@
           "name": "slug",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "parentId": {
           "name": "parentId",
@@ -304,6 +336,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "impersonated_by": {
+          "name": "impersonated_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},

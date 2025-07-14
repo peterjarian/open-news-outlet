@@ -12,25 +12,25 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import z from 'zod';
+import { CreateArticleData, createArticleSchema } from '@/schemas/articles';
+import { TextEditor } from '@/components/admin/text-editor';
 
-const schema = z.object({
-  title: z.string(),
-  description: z.string(),
-  // content
-});
+type CreateArticleFormProps = {
+  onSubmit(data: CreateArticleData): void;
+};
 
-export function CreateArticleForm() {
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: { title: '', description: '' },
+export function CreateArticleForm({ onSubmit }: CreateArticleFormProps) {
+  const form = useForm<CreateArticleData>({
+    resolver: zodResolver(createArticleSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+    },
   });
-
-  async function handleSubmit({}: z.infer<typeof schema>) {}
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form id="article-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="title"
@@ -61,6 +61,18 @@ export function CreateArticleForm() {
                 />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Content</FormLabel>
+              <FormControl>
+                <TextEditor content={field.value || ''} onChange={field.onChange} />
+              </FormControl>
             </FormItem>
           )}
         />

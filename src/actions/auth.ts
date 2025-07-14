@@ -7,8 +7,12 @@ import { tryJSONParse } from '@/lib/try-json-parse';
 
 import { failure, success } from '.';
 import { authClient } from '@/lib/auth/client';
+import { LoginData, loginSchema } from '@/schemas/auth';
 
-export async function sendMagicLink(email: string) {
+export async function sendMagicLink({ email }: LoginData) {
+  const validate = await loginSchema.safeParseAsync({ email });
+  if (!validate.success) return failure(validate.error.issues[0].message);
+
   const verifications = await db
     .select()
     .from(verificationTable)
@@ -31,7 +35,10 @@ export async function sendMagicLink(email: string) {
     callbackURL: '/admin/sign-in',
   });
 
-  if (error) return failure('Failed to create a magic link.');
+  if (error) {
+    console.log('[AUTH] Failed to create magic link', error);
+    return failure('Failed to create a magic link.');
+  }
 
   return success('A magic link was sent to your email.');
 }

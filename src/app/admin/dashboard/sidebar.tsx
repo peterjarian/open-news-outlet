@@ -16,9 +16,10 @@ import {
   SidebarMenuSubItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
-import { FileText, Newspaper, LogOut, LucideIcon } from 'lucide-react';
+import { FileText, Newspaper, LogOut, LucideIcon, Pencil } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { env } from '@/env';
+import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
 
 type SubMenuItem = {
   title: string;
@@ -38,22 +39,12 @@ type SidebarGroup = {
 };
 
 type SidebarStructure = {
-  header: {
-    title: string;
-    subtitle: string;
-    icon: LucideIcon;
-  };
   groups: SidebarGroup[];
   separator?: boolean;
   footer: MenuItem[];
 };
 
 const sidebarData: SidebarStructure = {
-  header: {
-    title: 'Newsroom',
-    subtitle: env.NEXT_PUBLIC_BRAND_NAME,
-    icon: Newspaper,
-  },
   groups: [
     {
       label: 'Content',
@@ -62,6 +53,11 @@ const sidebarData: SidebarStructure = {
           title: 'Articles',
           href: '/admin/dashboard/articles',
           icon: FileText,
+        },
+        {
+          title: 'Editor',
+          href: '/admin/dashboard/editor',
+          icon: Pencil,
         },
       ],
     },
@@ -81,7 +77,7 @@ export function AdminSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="flex h-16 flex-row items-center border-b">
+      <SidebarHeader className="flex h-16 flex-row items-center border-b px-4">
         <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
           <Newspaper className="size-4" />
         </div>
@@ -98,10 +94,10 @@ export function AdminSidebar() {
                   {group.items.map((item) => (
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton asChild isActive={pathname === item.href}>
-                        <a href={item.href}>
+                        <HoverPrefetchLink href={item.href}>
                           <item.icon className="h-4 w-4" />
                           <span>{item.title}</span>
-                        </a>
+                        </HoverPrefetchLink>
                       </SidebarMenuButton>
                       {item.subItems && (
                         <SidebarMenuSub>

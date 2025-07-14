@@ -8,6 +8,10 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string(),
     RESEND_API_KEY: z.string(),
     RESEND_EMAIL: z.string(),
+    S3_ACCESS_KEY_ID: z.string(),
+    S3_SECRET_ACCESS_KEY: z.string(),
+    S3_ENDPOINT: z.string().optional(),
+    S3_BUCKET_NAME: z.string(),
   },
   client: {
     NEXT_PUBLIC_BASE_URL: z.string(),
@@ -21,5 +25,9 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_EMAIL: process.env.RESEND_EMAIL,
+    S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
+    S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
+    S3_ENDPOINT: process.env.S3_ENDPOINT,
+    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
   },
 });

@@ -1,5 +1,7 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -118,5 +120,14 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .tiptap h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .tiptap h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
   }
 }
