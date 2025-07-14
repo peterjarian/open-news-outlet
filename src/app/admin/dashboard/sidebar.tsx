@@ -16,7 +16,7 @@ import {
   SidebarMenuSubItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
-import { FileText, Newspaper, LogOut, LucideIcon, Pencil } from 'lucide-react';
+import { FileText, Newspaper, LogOut, LucideIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { env } from '@/env';
 import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
@@ -53,11 +53,6 @@ const sidebarData: SidebarStructure = {
           title: 'Articles',
           href: '/admin/dashboard/articles',
           icon: FileText,
-        },
-        {
-          title: 'Editor',
-          href: '/admin/dashboard/editor',
-          icon: Pencil,
         },
       ],
     },

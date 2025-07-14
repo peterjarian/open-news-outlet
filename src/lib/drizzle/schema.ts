@@ -21,12 +21,13 @@ export const articleTable = pgTable('articles', {
   title: text().notNull(),
   description: text().notNull(),
   featuredImage: text().notNull(),
-  content: text().notNull(),
+  content: text(),
   categoryId: integer().references(() => categoryTable.id),
   authorId: text().references(() => userTable.id),
-  status: text('status').default('draft'),
-  publishedAt: timestamp().defaultNow(),
+  status: text('status').notNull().default('draft'),
+  publishedAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp()
+    .notNull()
     .defaultNow()
     .$onUpdate(() => new Date()),
 });

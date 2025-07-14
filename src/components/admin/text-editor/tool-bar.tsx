@@ -1,13 +1,4 @@
-import {
-  Bold,
-  Heading1,
-  Heading2,
-  Heading3,
-  Italic,
-  List,
-  ListOrdered,
-  Strikethrough,
-} from 'lucide-react';
+import { Bold, Heading2, Heading3, Italic, List, ListOrdered, Strikethrough } from 'lucide-react';
 import { Editor } from '@tiptap/react';
 import { Toggle } from '@/components/ui/toggle';
 
@@ -17,11 +8,6 @@ export function ToolBar({ editor }: { editor: Editor | null }) {
   }
 
   const Options = [
-    {
-      icon: <Heading1 className="size-4" />,
-      onClick: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
-      pressed: editor.isActive('heading', { level: 1 }),
-    },
     {
       icon: <Heading2 className="size-4" />,
       onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
@@ -65,6 +51,26 @@ export function ToolBar({ editor }: { editor: Editor | null }) {
         <Toggle key={index} pressed={option.pressed} onPressedChange={option.onClick}>
           {option.icon}
         </Toggle>
+      ))}
+    </div>
+  );
+}
+
+export function ToolBarSkeleton() {
+  const icons = [
+    <Heading2 key="h2" className="size-4" />,
+    <Heading3 key="h3" className="size-4" />,
+    <Bold key="bold" className="size-4" />,
+    <Italic key="italic" className="size-4" />,
+    <Strikethrough key="strike" className="size-4" />,
+    <List key="list" className="size-4" />,
+    <ListOrdered key="ordered" className="size-4" />,
+  ];
+
+  return (
+    <div className="space-x-2 border-b p-2">
+      {icons.map((icon, i) => (
+        <Toggle key={i}>{icon}</Toggle>
       ))}
     </div>
   );

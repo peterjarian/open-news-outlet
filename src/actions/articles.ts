@@ -8,8 +8,6 @@ import { articleTable } from '@/lib/drizzle/schema';
 import { tryCatch } from '@/lib/try-catch';
 import { slugify } from '@/lib/utils';
 import { CreateArticleData, createArticleSchema } from '@/schemas/articles';
-import { generateJSON } from '@tiptap/html/server';
-import StarterKit from '@tiptap/starter-kit';
 import DOMPurify from 'isomorphic-dompurify';
 
 export async function createArticle(article: CreateArticleData) {
@@ -25,19 +23,20 @@ export async function createArticle(article: CreateArticleData) {
   const purified = {
     title: DOMPurify.sanitize(validate.data.title),
     description: DOMPurify.sanitize(validate.data.description),
-    content: DOMPurify.sanitize(validate.data.content),
   } as const;
 
-  const { error } = await tryCatch(
-    db.insert(articleTable).values({
-      title: purified.title,
-      slug: slugify(purified.title),
-      description: purified.description,
-      content: JSON.stringify(generateJSON(purified.content, [StarterKit])),
-      featuredImage: '',
-      authorId: session.user.id,
-      status: 'published',
-    }),
+  const { data: createdArticle, error } = await tryCatch(
+    db
+      .insert(articleTable)
+      .values({
+        title: purified.title,
+        slug: slugify(purified.title),
+        description: purified.description,
+        featuredImage: '',
+        authorId: session.user.id,
+        status: 'concept',
+      })
+      .returning(),
   );
 
   if (error) {
@@ -45,5 +44,5 @@ export async function createArticle(article: CreateArticleData) {
     return failure('An article with this title already exists.');
   }
 
-  return success('Article created');
+  return success(createdArticle[0]);
 }
