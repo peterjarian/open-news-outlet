@@ -12,6 +12,7 @@ export const env = createEnv({
     S3_SECRET_ACCESS_KEY: z.string(),
     S3_ENDPOINT: z.string().optional(),
     S3_BUCKET_NAME: z.string(),
+    REDIS_URL: z.string(),
   },
   client: {
     NEXT_PUBLIC_BASE_URL: z.string(),
@@ -29,5 +30,6 @@ export const env = createEnv({
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+    REDIS_URL: process.env.REDIS_URL,
   },
 });
