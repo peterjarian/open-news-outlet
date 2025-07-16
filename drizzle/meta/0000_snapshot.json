@@ -1,5 +1,5 @@
 {
-  "id": "87e6236e-42c8-4c5f-b754-fa5ba12ffbb0",
+  "id": "4c0482b8-3c30-4ab7-b45c-003d5c0d2ce3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -149,6 +149,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "archived": {
+          "name": "archived",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "categoryId": {
           "name": "categoryId",
           "type": "integer",
@@ -163,10 +170,11 @@
         },
         "status": {
           "name": "status",
-          "type": "text",
+          "type": "status",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'draft'"
+          "default": "'concept'"
         },
         "publishedAt": {
           "name": "publishedAt",
@@ -511,7 +519,18 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.status": {
+      "name": "status",
+      "schema": "public",
+      "values": [
+        "concept",
+        "draft",
+        "review",
+        "published"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

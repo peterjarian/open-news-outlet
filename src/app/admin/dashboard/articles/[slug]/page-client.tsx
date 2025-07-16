@@ -29,6 +29,7 @@ export function ArticlePageClient() {
       title: article.title,
       description: article.description,
       content: article.content ?? { type: 'doc', content: [] },
+      status: article.status as string | undefined,
     });
 
     if (res.error) toast.error(res.error);

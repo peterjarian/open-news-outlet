@@ -8,7 +8,23 @@ import {
   boolean,
   serial,
   jsonb,
+  pgEnum,
 } from 'drizzle-orm/pg-core';
+
+export enum ArticleStatus {
+  CONCEPT = 'concept',
+  DRAFT = 'draft',
+  REVIEW = 'review',
+  PUBLISHED = 'published',
+}
+
+export function enumToPgEnum<T extends Record<string, string | number>>(
+  myEnum: T,
+): [T[keyof T], ...T[keyof T][]] {
+  return Object.values(myEnum).map((value) => String(value)) as [T[keyof T], ...T[keyof T][]];
+}
+
+export const statusEnum = pgEnum('status', enumToPgEnum(ArticleStatus));
 
 export const categoryTable = pgTable('categories', {
   id: serial().primaryKey(),
@@ -24,9 +40,10 @@ export const articleTable = pgTable('articles', {
   description: text().notNull(),
   featuredImage: text().notNull(),
   content: jsonb().$type<JSONContent>(),
+  archived: boolean().notNull().default(false),
   categoryId: integer().references(() => categoryTable.id),
   authorId: text().references(() => userTable.id),
-  status: text('status').notNull().default('draft'),
+  status: statusEnum('status').notNull().default(ArticleStatus.CONCEPT),
   publishedAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp()
     .notNull()

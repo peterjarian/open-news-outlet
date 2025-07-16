@@ -4,8 +4,8 @@
 - [] Create SEO options for article edit page
 - [] Option to add category to article
 - [] Option for setting deadlines
-- [] Option for archiving articles
-- [] Option for deleting articles
+- [x] Option for archiving articles
+- [x] Option for deleting articles
 - [] Option for adding thumbnail to article
 
 ## Notes

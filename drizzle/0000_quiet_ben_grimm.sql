@@ -1,3 +1,4 @@
+CREATE TYPE "public"."status" AS ENUM('concept', 'draft', 'review', 'published');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -21,9 +22,10 @@ CREATE TABLE "articles" (
 	"description" text NOT NULL,
 	"featuredImage" text NOT NULL,
 	"content" jsonb,
+	"archived" boolean DEFAULT false NOT NULL,
 	"categoryId" integer,
 	"authorId" text,
-	"status" text DEFAULT 'draft' NOT NULL,
+	"status" "status" DEFAULT 'concept' NOT NULL,
 	"publishedAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "articles_slug_unique" UNIQUE("slug")

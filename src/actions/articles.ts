@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { failure, success } from '.';
 import { db } from '@/lib/drizzle';
-import { articleTable } from '@/lib/drizzle/schema';
+import { ArticleStatus, articleTable } from '@/lib/drizzle/schema';
 import { tryCatch } from '@/lib/try-catch';
 import { slugify } from '@/lib/utils';
 import {
@@ -41,7 +41,6 @@ export async function createArticle(article: CreateArticleData) {
         description: purified.description,
         featuredImage: '',
         authorId: session.user.id,
-        status: 'concept',
       })
       .returning(),
   );
@@ -57,8 +56,6 @@ export async function createArticle(article: CreateArticleData) {
 }
 
 export async function saveArticle(id: number, data: UpdateArticleData) {
-  console.log(data.content);
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -93,8 +90,10 @@ export async function saveArticle(id: number, data: UpdateArticleData) {
   }
 
   const purified = {
-    title: DOMPurify.sanitize(validate.data.title),
-    description: DOMPurify.sanitize(validate.data.description),
+    title: validate.data.title ? DOMPurify.sanitize(validate.data.title) : undefined,
+    description: validate.data.description
+      ? DOMPurify.sanitize(validate.data.description)
+      : undefined,
   } as const;
 
   const { data: updatedArticles, error: updateError } = await tryCatch(
@@ -105,6 +104,7 @@ export async function saveArticle(id: number, data: UpdateArticleData) {
         description: purified.description,
         content: data.content,
         updatedAt: new Date(),
+        status: data.status as ArticleStatus,
       })
       .where(eq(articleTable.id, Number(id)))
       .returning(),
@@ -128,13 +128,7 @@ export async function archiveArticle(id: number) {
   if (!session) return failure('You are not allowed to archive this article.');
 
   const { data, error } = await tryCatch(
-    db
-      .update(articleTable)
-      .set({
-        status: 'archived',
-      })
-      .where(eq(articleTable.id, id))
-      .returning(),
+    db.update(articleTable).set({ archived: true }).where(eq(articleTable.id, id)).returning(),
   );
 
   if (error) {

@@ -3,19 +3,8 @@
 import { useArticle } from '@/hooks/use-article';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import {
-  UserIcon,
-  Trash2Icon,
-  ChevronDownIcon,
-  AlertTriangleIcon,
-  CalendarIcon,
-  ArchiveIcon,
-} from 'lucide-react';
+import { UserIcon, Trash2Icon, ChevronDownIcon, CalendarIcon, ArchiveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { generateHTML } from '@tiptap/core';
-import { htmlToText } from 'html-to-text';
-import countWords from 'words-count';
-import StarterKit from '@tiptap/starter-kit';
 import { authClient } from '@/lib/auth/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -31,57 +20,33 @@ import {
 import { archiveArticle, deleteArticle } from '@/actions/articles';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-
-function getStatusColor(status: string): string {
-  switch (status) {
-    case 'published':
-      return 'bg-green-500';
-    case 'ready-for-review':
-      return 'bg-purple-500';
-    case 'draft':
-      return 'bg-yellow-500';
-    case 'concept':
-      return 'bg-blue-500';
-    case 'archived':
-      return 'bg-red-500';
-    default:
-      return 'bg-gray-500';
-  }
-}
+import { getStatusColor, getWordCount, calculateReadTime } from '@/lib/article';
+import { ArticleStatus } from '@/lib/drizzle/schema';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
 export function ArticleSidebar() {
-  const { article } = useArticle();
+  const { article, setArticle, setChanged } = useArticle();
   const { data: session } = authClient.useSession();
-  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [wordCount, setWordCount] = useState<number>();
   const [minutesToRead, setMinutesToRead] = useState<number>();
   const router = useRouter();
 
   useEffect(() => {
-    if (article.content && typeof article.content === 'object' && !Array.isArray(article.content)) {
-      const text = htmlToText(generateHTML(article.content, [StarterKit]));
-      setWordCount(countWords(text));
-    } else {
-      setWordCount(0);
-    }
-  }, [article, article.content]);
+    if (article.content) setWordCount(getWordCount(article.content));
+  }, [article.content]);
 
   useEffect(() => {
-    if (wordCount && wordCount > 0) {
-      setMinutesToRead(Math.ceil(wordCount / 200));
-      return;
-    }
-
-    setMinutesToRead(0);
+    if (wordCount !== undefined) setMinutesToRead(calculateReadTime(wordCount));
   }, [wordCount]);
 
   const deadline = 'Dec 15, 2024';
   const isOverdue = false;
-
-  const handleStatusChange = (newStatus: string) => {
-    console.log(`Changing status to: ${newStatus}`);
-    setShowStatusDropdown(false);
-  };
 
   async function handleArchive() {
     const res = await archiveArticle(article.id);
@@ -107,47 +72,41 @@ export function ArticleSidebar() {
     router.push('/admin/dashboard/articles');
   }
 
-  const statusOptions = ['concept', 'draft', 'ready-for-review', 'published'];
+  async function handleStatusChange(status: ArticleStatus) {
+    if (article.status === status) return;
+    setArticle({ ...article, status });
+    setChanged(true);
+  }
 
   return (
     <div className="space-y-4 rounded-lg border bg-white p-4 dark:bg-gray-950">
-      {/* Editorial Status */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${getStatusColor(article.status)}`} />
-            <span className="text-sm font-medium capitalize">{article.status || 'draft'}</span>
-          </div>
-          {isOverdue && <AlertTriangleIcon className="h-4 w-4 text-red-500" />}
-        </div>
-
-        <div className="relative">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full justify-between"
-            onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-          >
-            Move to...
-            <ChevronDownIcon className="h-4 w-4" />
-          </Button>
-
-          {showStatusDropdown && (
-            <div className="absolute top-full z-10 mt-1 w-full rounded-md border bg-white shadow-lg dark:bg-gray-950">
-              {statusOptions.map((status) => (
-                <button
-                  key={status}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={() => handleStatusChange(status)}
-                  disabled={article.status === status}
-                >
-                  <div className={`h-2 w-2 rounded-full ${getStatusColor(status)}`} />
-                  <span className="capitalize">{status.replace('-', ' ')}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="w-full justify-between">
+              <div className="flex items-center gap-2">
+                <div
+                  aria-hidden
+                  className={cn('h-2 w-2 rounded-full', getStatusColor(article.status))}
+                />
+                <span className="capitalize">{article.status}</span>
+              </div>
+              <ChevronDownIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="min-w-[var(--radix-dropdown-menu-trigger-width)]">
+            {Object.entries(ArticleStatus).map(([key, value]) => (
+              <DropdownMenuItem
+                key={key}
+                className="flex items-center gap-2"
+                onSelect={() => handleStatusChange(value)}
+              >
+                <div aria-hidden className={cn('h-2 w-2 rounded-full', getStatusColor(value))} />
+                <span className="capitalize">{value}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <Separator />
