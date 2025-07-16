@@ -1,107 +1,77 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { ArticleInformation } from './_components/article-information';
+import { AdminPageHeader } from '@/components/admin/page-header';
+import { createBreadcrumb } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { TextEditor } from '@/components/admin/text-editor';
-import { InferSelectModel } from 'drizzle-orm';
-import { articleTable } from '@/lib/drizzle/schema';
-import { type JSONContent } from '@tiptap/react';
+import { Eye, Save } from 'lucide-react';
+import { AdminPageContainer } from '@/components/admin/container';
+import { useArticle } from '@/hooks/use-article';
+import { useState } from 'react';
+import { LoadingSpinner } from '@/components/common/loading-spinner';
+import { saveArticle } from '@/actions/articles';
+import { toast } from 'sonner';
+import { ArticleSidebar } from './_components/article-sidebar';
 
-type ArticlePageClientProps = {
-  article: InferSelectModel<typeof articleTable>;
-};
+const getBreadcrumbs = (articleTitle: string) => [
+  { label: 'Articles', href: '/admin/dashboard/articles' },
+  { label: articleTitle, isCurrent: true },
+];
 
-export function ArticlePageClient({ article }: ArticlePageClientProps) {
-  function parseContent(): JSONContent | undefined {
-    if (!article.content) return undefined;
-    return JSON.parse(article.content) as JSONContent;
+export function ArticlePageClient() {
+  const [savingArticle, setSavingArticle] = useState(false);
+  const { article, setArticle, changed, setChanged } = useArticle();
+
+  async function handleArticleSave() {
+    setSavingArticle(true);
+
+    const res = await saveArticle(article.id, {
+      title: article.title,
+      description: article.description,
+      content: article.content ?? { type: 'doc', content: [] },
+    });
+
+    if (res.error) toast.error(res.error);
+    else toast.success('Updates saved!');
+
+    setArticle({ ...article, updatedAt: new Date() });
+    setSavingArticle(false);
+    setChanged(false);
   }
 
-  const handleSave = () => {
-    // You'll implement the server action here
-    console.log('Save article:', article);
-  };
-
-  const handlePublish = () => {
-    // You'll implement the server action here
-    console.log('Publish article:', { ...article, status: 'published' });
-  };
-
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">{article.title}</h1>
-      </div>
-
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Article Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="title">Title</Label>
-              <Input id="title" defaultValue={article.title} placeholder="Enter article title" />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                defaultValue={article.description || ''}
-                placeholder="Enter article description"
-                rows={3}
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="featuredImage">Featured Image URL</Label>
-              <Input
-                id="featuredImage"
-                defaultValue={article.featuredImage || ''}
-                placeholder="Enter image URL"
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="status">Status</Label>
-              <select
-                id="status"
-                defaultValue={article.status}
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
-              </select>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Content</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TextEditor
-              content={parseContent()}
-              onChange={(content) => console.log('Content changed:', content)}
-            />
-          </CardContent>
-        </Card>
-
-        <div className="flex gap-4">
-          <Button onClick={handleSave} variant="outline">
-            Save Draft
+    <>
+      <AdminPageHeader className="justify-between">
+        <div className="min-w-0 flex-1">{createBreadcrumb(getBreadcrumbs(article.title))}</div>
+        <div className="flex flex-shrink-0 items-center space-x-2">
+          <Button size="sm" variant="secondary">
+            <Eye />
+            <span>Preview</span>
           </Button>
-          <Button onClick={handlePublish}>
-            {article.status === 'published' ? 'Update Published' : 'Publish'}
+          <Button size="sm" disabled={!changed} onClick={handleArticleSave}>
+            {savingArticle ? (
+              <LoadingSpinner />
+            ) : (
+              <>
+                <Save />
+                <span>Save</span>
+              </>
+            )}
           </Button>
         </div>
-      </div>
-    </div>
+      </AdminPageHeader>
+      <AdminPageContainer>
+        <div className="flex flex-col gap-y-8 lg:flex-row lg:gap-x-8">
+          {/* Main content area */}
+          <div className="min-w-0 flex-1">
+            <ArticleInformation />
+          </div>
+
+          <div className="w-full flex-shrink-0 lg:w-80">
+            <ArticleSidebar />
+          </div>
+        </div>
+      </AdminPageContainer>
+    </>
   );
 }

@@ -9,7 +9,7 @@ import { type JSONContent } from '@tiptap/react';
 
 type TextEditorProps = {
   content?: JSONContent;
-  onChange(richText: string): void;
+  onChange(content: JSONContent): void;
 };
 
 export function TextEditor({ content, onChange }: TextEditorProps) {
@@ -25,7 +25,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
       },
     },
     onUpdate({ editor }) {
-      onChange(editor.getHTML());
+      onChange(editor.getJSON());
     },
     onCreate() {
       setIsReady(true);
@@ -34,10 +34,8 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
   });
 
   useEffect(() => {
-    if (editor && content !== undefined) {
-      editor.commands.setContent(content);
-    }
-  }, [editor, content]);
+    if (!content) editor?.commands.setContent({ type: 'doc', content: [] });
+  }, [content, editor?.commands]);
 
   if (!isReady || !editor) {
     return <TextEditorSkeleton />;

@@ -1,3 +1,4 @@
+import { JSONContent } from '@tiptap/react';
 import {
   AnyPgColumn,
   pgTable,
@@ -6,6 +7,7 @@ import {
   timestamp,
   boolean,
   serial,
+  jsonb,
 } from 'drizzle-orm/pg-core';
 
 export const categoryTable = pgTable('categories', {
@@ -21,7 +23,7 @@ export const articleTable = pgTable('articles', {
   title: text().notNull(),
   description: text().notNull(),
   featuredImage: text().notNull(),
-  content: text(),
+  content: jsonb().$type<JSONContent>(),
   categoryId: integer().references(() => categoryTable.id),
   authorId: text().references(() => userTable.id),
   status: text('status').notNull().default('draft'),

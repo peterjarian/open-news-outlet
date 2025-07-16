@@ -14,7 +14,7 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
     <ol
       data-slot="breadcrumb-list"
       className={cn(
-        'text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm break-words sm:gap-2.5',
+        'text-muted-foreground flex min-w-0 flex-nowrap items-center gap-1.5 text-sm break-words sm:gap-2.5',
         className,
       )}
       {...props}
@@ -104,20 +104,38 @@ function createBreadcrumb(items: BreadcrumbItem[]) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {items.map((item, index) => (
-          <React.Fragment key={index}>
-            <BreadcrumbItem>
-              {item.href && !item.isCurrent ? (
-                <BreadcrumbLink asChild>
-                  <HoverPrefetchLink href={item.href}>{item.label}</HoverPrefetchLink>
-                </BreadcrumbLink>
-              ) : (
-                <BreadcrumbPage>{item.label}</BreadcrumbPage>
-              )}
-            </BreadcrumbItem>
-            {index < items.length - 1 && <BreadcrumbSeparator />}
-          </React.Fragment>
-        ))}
+        {items.map((item, index) => {
+          const isFirst = index === 0;
+          const isLast = index === items.length - 1;
+          return (
+            <React.Fragment key={index}>
+              <BreadcrumbItem
+                className={
+                  isFirst
+                    ? 'flex-shrink-0' // don't truncate first item
+                    : isLast
+                      ? 'min-w-0 flex-1'
+                      : 'flex-shrink-0'
+                }
+              >
+                {item.href && !item.isCurrent ? (
+                  <BreadcrumbLink asChild className={isFirst ? '' : 'truncate'}>
+                    <HoverPrefetchLink className={isFirst ? '' : 'block truncate'} href={item.href}>
+                      {item.label}
+                    </HoverPrefetchLink>
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage
+                    className={isLast ? 'breadcrumb-title min-w-0 flex-1 truncate' : ''}
+                  >
+                    {item.label}
+                  </BreadcrumbPage>
+                )}
+              </BreadcrumbItem>
+              {index < items.length - 1 && <BreadcrumbSeparator />}
+            </React.Fragment>
+          );
+        })}
       </BreadcrumbList>
     </Breadcrumb>
   );

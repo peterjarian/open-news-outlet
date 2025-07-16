@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1752408128506,
-      "tag": "0000_gorgeous_devos",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1752432056890,
-      "tag": "0001_heavy_nextwave",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1752511400091,
-      "tag": "0002_dapper_golden_guardian",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1752514463923,
-      "tag": "0003_lean_thunderbolt_ross",
+      "when": 1752607983208,
+      "tag": "0000_flat_bulldozer",
       "breakpoints": true
     }
   ]

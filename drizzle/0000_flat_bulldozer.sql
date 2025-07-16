@@ -16,23 +16,23 @@ CREATE TABLE "account" (
 --> statement-breakpoint
 CREATE TABLE "articles" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"title" text NOT NULL,
 	"slug" text,
+	"title" text NOT NULL,
 	"description" text NOT NULL,
-	"content" text NOT NULL,
+	"featuredImage" text NOT NULL,
+	"content" jsonb,
 	"categoryId" integer,
 	"authorId" text,
-	"status" text DEFAULT 'draft',
-	"featuredImage" text,
-	"publishedAt" timestamp DEFAULT now(),
-	"updatedAt" timestamp DEFAULT now(),
+	"status" text DEFAULT 'draft' NOT NULL,
+	"publishedAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "articles_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE "categories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
-	"slug" text,
+	"slug" text NOT NULL,
 	"parentId" integer,
 	CONSTRAINT "categories_slug_unique" UNIQUE("slug")
 );

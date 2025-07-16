@@ -22,7 +22,6 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tiptap/core": "^3.0.1",
-    "@tiptap/extension-underline": "^3.0.1",
     "@tiptap/html": "^3.0.1",
     "@tiptap/pm": "^3.0.1",
     "@tiptap/react": "^3.0.1",
@@ -33,6 +32,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.0",
     "drizzle-orm": "^0.44.2",
+    "html-to-text": "^9.0.5",
     "ioredis": "^5.6.1",
     "isomorphic-dompurify": "^2.26.0",
     "lucide-react": "^0.525.0",
@@ -50,6 +50,7 @@
     "sonner": "^2.0.6",
     "spinners-react": "^1.0.11",
     "tailwind-merge": "^3.3.1",
+    "words-count": "^2.0.2",
     "zod": "^4.0.5"
   },
   "devDependencies": {
@@ -57,6 +58,7 @@
     "@next/eslint-plugin-next": "^15.3.5",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "github:tailwindcss/typography",
+    "@types/html-to-text": "^9.0.4",
     "@types/minimist": "^1.2.5",
     "@types/node": "^20",
     "@types/pg": "^8.15.4",

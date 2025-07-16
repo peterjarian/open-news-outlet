@@ -7,8 +7,15 @@ import { db } from '@/lib/drizzle';
 import { articleTable } from '@/lib/drizzle/schema';
 import { tryCatch } from '@/lib/try-catch';
 import { slugify } from '@/lib/utils';
-import { CreateArticleData, createArticleSchema } from '@/schemas/articles';
+import {
+  CreateArticleData,
+  createArticleSchema,
+  UpdateArticleData,
+  updateArticleSchema,
+} from '@/schemas/articles';
 import DOMPurify from 'isomorphic-dompurify';
+import { eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 
 export async function createArticle(article: CreateArticleData) {
   const validate = await createArticleSchema.safeParseAsync(article);
@@ -44,5 +51,115 @@ export async function createArticle(article: CreateArticleData) {
     return failure('An article with this title already exists.');
   }
 
+  revalidatePath('/admin/dashboard/articles');
+
   return success(createdArticle[0]);
+}
+
+export async function saveArticle(id: number, data: UpdateArticleData) {
+  console.log(data.content);
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) return failure('You are not allowed to update this article.');
+
+  const validate = await updateArticleSchema.safeParseAsync(data);
+  if (!validate.success) return failure(validate.error.issues[0].message);
+
+  const { data: foundArticles, error: findError } = await tryCatch(
+    db
+      .select()
+      .from(articleTable)
+      .where(eq(articleTable.id, Number(id)))
+      .limit(1),
+  );
+
+  if (findError) {
+    console.log('[ARTICLES] Failed to find article:', findError);
+    return failure('Failed to find article.');
+  }
+
+  const article = foundArticles[0];
+
+  if (!article) {
+    console.log('[ARTICLES] Article not found for id:', id);
+    return failure('Article not found.');
+  }
+
+  if (article.authorId !== session.user.id) {
+    return failure('You are not allowed to update this article.');
+  }
+
+  const purified = {
+    title: DOMPurify.sanitize(validate.data.title),
+    description: DOMPurify.sanitize(validate.data.description),
+  } as const;
+
+  const { data: updatedArticles, error: updateError } = await tryCatch(
+    db
+      .update(articleTable)
+      .set({
+        title: purified.title,
+        description: purified.description,
+        content: data.content,
+        updatedAt: new Date(),
+      })
+      .where(eq(articleTable.id, Number(id)))
+      .returning(),
+  );
+
+  if (updateError) {
+    console.log('[ARTICLES] Failed to update article', updateError);
+    return failure('Failed to update article.');
+  }
+
+  revalidatePath('/admin/dashboard/articles');
+
+  return success(updatedArticles[0]);
+}
+
+export async function archiveArticle(id: number) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) return failure('You are not allowed to archive this article.');
+
+  const { data, error } = await tryCatch(
+    db
+      .update(articleTable)
+      .set({
+        status: 'archived',
+      })
+      .where(eq(articleTable.id, id))
+      .returning(),
+  );
+
+  if (error) {
+    console.log('[ARTICLE] Failed to archive article:', error);
+    return failure('Failed to archive the article.');
+  }
+
+  return success(data[0]);
+}
+
+export async function deleteArticle(id: number) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) return failure('You are not allowed to archive this article.');
+
+  const { error } = await tryCatch(db.delete(articleTable).where(eq(articleTable.id, id)));
+
+  if (error) {
+    console.log('[ARTICLE] Failed to delete article:', error);
+    return failure('Failed to delete the article.');
+  }
+
+  revalidatePath('/admin/dashboard/articles');
+
+  return success({});
 }

@@ -163,13 +163,11 @@ export default function Page() {
                 {countdownDate && (
                   <span>
                     {' '}
-                    (
                     <Countdown
                       date={countdownDate}
                       renderer={renderer}
                       onComplete={handleCountdownComplete}
                     />
-                    )
                   </span>
                 )}
               </button>
@@ -191,7 +189,7 @@ export default function Page() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="user@example.com" {...field} />
+                          <Input placeholder="user@example.com" type="email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

@@ -22,7 +22,7 @@ export default async function Page() {
         <CreateArticleWrapper />
       </AdminPageHeader>
       <AdminPageContainer>
-        <ul className="grid grid-cols-2 gap-4">
+        <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {!articles.length ? (
             <li className="col-span-2 flex items-center justify-center py-12">
               <div className="text-center">

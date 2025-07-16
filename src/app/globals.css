@@ -130,4 +130,16 @@
     font-size: 1.25rem;
     font-weight: 600;
   }
+
+  .container-breadcrumb {
+    container-type: inline-size;
+  }
+
+  .breadcrumb-title {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
