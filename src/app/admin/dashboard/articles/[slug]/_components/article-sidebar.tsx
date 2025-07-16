@@ -166,7 +166,6 @@ export function ArticleSidebar() {
               variant="outline"
               size="sm"
               className="w-full border-amber-200 bg-amber-50 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300 dark:hover:bg-amber-900"
-              onClick={() => console.log('Archive article')}
             >
               <ArchiveIcon />
               <span>Archive</span>
@@ -199,7 +198,7 @@ export function ArticleSidebar() {
           <DialogTrigger asChild>
             <Button variant="destructive" size="sm" className="w-full">
               <Trash2Icon />
-              <span>Delete Article</span>
+              <span>Delete</span>
             </Button>
           </DialogTrigger>
           <DialogContent>

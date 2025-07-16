@@ -144,7 +144,7 @@ export async function deleteArticle(id: number) {
     headers: await headers(),
   });
 
-  if (!session) return failure('You are not allowed to archive this article.');
+  if (!session) return failure('You are not allowed to delete this article.');
 
   const { error } = await tryCatch(db.delete(articleTable).where(eq(articleTable.id, id)));
 

@@ -63,11 +63,9 @@ export function ArticlePageClient() {
       </AdminPageHeader>
       <AdminPageContainer>
         <div className="flex flex-col gap-y-8 lg:flex-row lg:gap-x-8">
-          {/* Main content area */}
           <div className="min-w-0 flex-1">
             <ArticleInformation />
           </div>
-
           <div className="w-full flex-shrink-0 lg:w-80">
             <ArticleSidebar />
           </div>
