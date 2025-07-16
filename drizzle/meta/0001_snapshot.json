@@ -1,6 +1,6 @@
 {
-  "id": "9e08df41-3e44-47ff-b568-1bef8dd4a1a4",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "b1e91380-fbb1-473e-a5aa-194428a07ae3",
+  "prevId": "9e08df41-3e44-47ff-b568-1bef8dd4a1a4",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -141,7 +141,7 @@
           "name": "seoTitle",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "seoDescription": {
           "name": "seoDescription",

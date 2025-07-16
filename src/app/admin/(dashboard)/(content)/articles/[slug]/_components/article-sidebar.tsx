@@ -3,7 +3,7 @@
 import { useArticle } from '@/hooks/use-article';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { UserIcon, Trash2Icon, ChevronDownIcon, CalendarIcon, ArchiveIcon } from 'lucide-react';
+import { UserIcon, Trash2Icon, ChevronDownIcon, ArchiveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth/client';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -44,9 +44,6 @@ export function ArticleSidebar() {
   useEffect(() => {
     if (wordCount !== undefined) setMinutesToRead(calculateReadTime(wordCount));
   }, [wordCount]);
-
-  const deadline = 'Dec 15, 2024';
-  const isOverdue = false;
 
   async function handleArchive() {
     const res = await archiveArticle(article.id);
@@ -136,24 +133,12 @@ export function ArticleSidebar() {
 
       <Separator />
 
-      {/* Deadline & Workflow */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm">
-          <CalendarIcon className="text-muted-foreground h-4 w-4" />
-          <span className="text-muted-foreground">Deadline:</span>
-          <span className={isOverdue ? 'font-medium text-red-600' : ''}>{deadline}</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <UserIcon className="text-muted-foreground h-4 w-4" />
-          <span>
-            {session?.user.name ? (
-              session.user.name
-            ) : (
-              <Skeleton className="inline-block h-4 w-16" />
-            )}
-          </span>
-          <span className="rounded bg-blue-100 px-1 py-0.5 text-xs text-blue-800">Editor</span>
-        </div>
+      <div className="flex items-center gap-2 text-sm">
+        <UserIcon className="text-muted-foreground h-4 w-4" />
+        <span>
+          {session?.user.name ? session.user.name : <Skeleton className="inline-block h-4 w-16" />}
+        </span>
+        <span className="rounded bg-blue-100 px-1 py-0.5 text-xs text-blue-800">Editor</span>
       </div>
 
       <Separator />
@@ -175,8 +160,8 @@ export function ArticleSidebar() {
             <DialogHeader>
               <DialogTitle>Are you sure?</DialogTitle>
               <DialogDescription>
-                Are you sure? This article will be archived and will no longer be visible to
-                readers.
+                Are you sure? This article will be archived and will no longer be visible to readers
+                if it&apos;s published.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -213,7 +198,7 @@ export function ArticleSidebar() {
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
               <Button variant="destructive" onClick={handleDelete}>
-                Archive
+                Delete
               </Button>
             </DialogFooter>
           </DialogContent>

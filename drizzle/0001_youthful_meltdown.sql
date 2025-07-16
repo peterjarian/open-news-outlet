@@ -1,0 +1,1 @@
+ALTER TABLE "articles" ALTER COLUMN "seoTitle" DROP NOT NULL;

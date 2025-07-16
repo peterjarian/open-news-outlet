@@ -45,6 +45,7 @@ auth.api
   })
   .then(() => {
     console.log('Admin user created successfully!');
+    process.exit(0);
   })
   .catch((error) => {
     console.error('Error creating admin user:', error);

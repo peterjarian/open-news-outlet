@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { ComponentProps } from 'react';
+import { SidebarTrigger } from '../ui/sidebar';
 
 export function AdminPageHeader({ children, className, ...props }: ComponentProps<'div'>) {
   return (
@@ -11,15 +12,16 @@ export function AdminPageHeader({ children, className, ...props }: ComponentProp
       )}
       {...props}
     >
+      <SidebarTrigger />
       {children}
     </div>
   );
 }
 
-export function AdminPageHeaderTitle({ children, className, ...props }: ComponentProps<'h1'>) {
+export function AdminPageHeaderContent({ children, className, ...props }: ComponentProps<'div'>) {
   return (
-    <h1 className={cn('', className)} {...props}>
+    <div className={cn('flex w-full items-center justify-between', className)} {...props}>
       {children}
-    </h1>
+    </div>
   );
 }

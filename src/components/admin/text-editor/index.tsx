@@ -6,6 +6,7 @@ import { ToolBar, ToolBarSkeleton } from './tool-bar';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { type JSONContent } from '@tiptap/react';
+import { Heading } from '@tiptap/extension-heading';
 
 type TextEditorProps = {
   content?: JSONContent;
@@ -16,7 +17,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
   const [isReady, setIsReady] = useState(false);
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit.configure({ heading: false }), Heading.configure({ levels: [2, 3] })],
     content,
     editorProps: {
       attributes: {

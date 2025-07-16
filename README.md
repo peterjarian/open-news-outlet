@@ -1,9 +1,7 @@
 ## Todo
 
-- [] Rewrite and make right sidebar work in article edit page
-- [] Create SEO options for article edit page
+- [x] Create SEO options for article edit page
 - [] Option to add category to article
-- [] Option for setting deadlines
 - [x] Option for archiving articles
 - [x] Option for deleting articles
 - [] Option for adding thumbnail to article

@@ -1,5 +1,5 @@
 import { AdminPageContainer } from '@/components/admin/container';
-import { AdminPageHeader } from '@/components/admin/page-header';
+import { AdminPageHeader, AdminPageHeaderContent } from '@/components/admin/page-header';
 import { createBreadcrumb } from '@/components/ui/breadcrumb';
 import { CreateArticleWrapper } from './_components/create-article-wrapper';
 import { db } from '@/lib/drizzle';
@@ -17,9 +17,11 @@ export default async function Page() {
 
   return (
     <>
-      <AdminPageHeader className="justify-between">
-        {createBreadcrumb([{ label: 'Articles', isCurrent: true }])}
-        <CreateArticleWrapper />
+      <AdminPageHeader className="space-x-2">
+        <AdminPageHeaderContent>
+          {createBreadcrumb([{ label: 'Articles', isCurrent: true }])}
+          <CreateArticleWrapper />
+        </AdminPageHeaderContent>
       </AdminPageHeader>
       <AdminPageContainer>
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
