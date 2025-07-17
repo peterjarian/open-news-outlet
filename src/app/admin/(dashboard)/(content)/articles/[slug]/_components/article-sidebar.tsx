@@ -33,8 +33,8 @@ import { cn } from '@/lib/utils';
 export function ArticleSidebar() {
   const { article, setArticle, setChanged } = useArticle();
   const { data: session } = authClient.useSession();
-  const [wordCount, setWordCount] = useState<number>();
-  const [minutesToRead, setMinutesToRead] = useState<number>();
+  const [wordCount, setWordCount] = useState<number>(0);
+  const [minutesToRead, setMinutesToRead] = useState<number>(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export function ArticleSidebar() {
     }
 
     toast.success('Archived article!');
-    router.push('/admin/dashboard/articles');
+    router.push('/admin/articles');
   }
 
   async function handleDelete() {
@@ -66,7 +66,7 @@ export function ArticleSidebar() {
     }
 
     toast.success('Deleted article!');
-    router.push('/admin/dashboard/articles');
+    router.push('/admin/articles');
   }
 
   async function handleStatusChange(status: ArticleStatus) {

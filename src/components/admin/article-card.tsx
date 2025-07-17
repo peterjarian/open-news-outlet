@@ -28,7 +28,7 @@ export function AdminArticleCard({ article }: AdminArticleCardProps) {
     : 'Never';
 
   return (
-    <HoverPrefetchLink href={`/admin/dashboard/articles/${article.slug}`}>
+    <HoverPrefetchLink href={`/admin/articles/${article.slug}`}>
       <Card className="h-full cursor-pointer transition hover:scale-102 hover:shadow-md">
         {/* Featured Image */}
         <div className="relative aspect-video">

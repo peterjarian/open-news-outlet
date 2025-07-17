@@ -13,8 +13,6 @@ import {
 
 export enum ArticleStatus {
   CONCEPT = 'concept',
-  DRAFT = 'draft',
-  REVIEW = 'review',
   PUBLISHED = 'published',
 }
 

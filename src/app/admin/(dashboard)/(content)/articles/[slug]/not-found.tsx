@@ -16,7 +16,7 @@ export default function ArticleNotFound() {
       </NotFoundLayoutDescription>
       <NotFoundLayoutActions>
         <Button asChild>
-          <HoverPrefetchLink href="/admin/dashboard/articles">Go back</HoverPrefetchLink>
+          <HoverPrefetchLink href="/admin/articles">Go back</HoverPrefetchLink>
         </Button>
       </NotFoundLayoutActions>
     </NotFoundLayout>

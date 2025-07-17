@@ -1,4 +1,13 @@
-CREATE TYPE "public"."status" AS ENUM('concept', 'draft', 'review', 'published');--> statement-breakpoint
+
+DROP TABLE IF EXISTS "account" CASCADE;
+DROP TABLE IF EXISTS "articles" CASCADE;
+DROP TABLE IF EXISTS "categories" CASCADE;
+DROP TABLE IF EXISTS "session" CASCADE;
+DROP TABLE IF EXISTS "user" CASCADE;
+DROP TABLE IF EXISTS "verification" CASCADE;
+-- Also drop the migration tracking table if it exists:
+DROP TABLE IF EXISTS "_drizzle_migrations" CASCADE;
+
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,

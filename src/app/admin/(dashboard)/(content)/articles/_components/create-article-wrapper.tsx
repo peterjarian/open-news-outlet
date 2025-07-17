@@ -34,7 +34,7 @@ export function CreateArticleWrapper() {
     }
 
     setIsSubmitting(false);
-    router.push(`/admin/dashboard/articles/${res.data!.slug}`);
+    router.push(`/admin/articles/${res.data!.slug}`);
   }
 
   return (

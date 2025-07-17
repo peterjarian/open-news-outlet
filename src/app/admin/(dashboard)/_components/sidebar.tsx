@@ -53,11 +53,6 @@ const menuItems = [
         url: '/admin/users',
         icon: Users,
       },
-    ],
-  },
-  {
-    title: 'Settings',
-    items: [
       {
         title: 'Settings',
         url: '/admin/settings',

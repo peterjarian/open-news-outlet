@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
   });
 
   if (data && pathname === '/admin/sign-in') {
-    return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+    return NextResponse.redirect(new URL('/admin', request.url));
   }
 
   if (!data && pathname !== '/admin/sign-in') {

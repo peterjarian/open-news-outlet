@@ -17,10 +17,6 @@ export function getStatusColor(status: ArticleStatus) {
   switch (status) {
     case ArticleStatus.CONCEPT:
       return 'bg-gray-400';
-    case ArticleStatus.DRAFT:
-      return 'bg-blue-400';
-    case ArticleStatus.REVIEW:
-      return 'bg-yellow-400';
     case ArticleStatus.PUBLISHED:
       return 'bg-green-500';
   }

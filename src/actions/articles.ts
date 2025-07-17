@@ -50,7 +50,7 @@ export async function createArticle(article: CreateArticleData) {
     return failure('An article with this title already exists.');
   }
 
-  revalidatePath('/admin/dashboard/articles');
+  revalidatePath('/admin/articles');
 
   return success(createdArticle[0]);
 }
@@ -115,7 +115,7 @@ export async function saveArticle(id: number, data: UpdateArticleData) {
     return failure('Failed to update article.');
   }
 
-  revalidatePath('/admin/dashboard/articles');
+  revalidatePath('/admin/articles');
 
   return success(updatedArticles[0]);
 }
@@ -153,7 +153,7 @@ export async function deleteArticle(id: number) {
     return failure('Failed to delete the article.');
   }
 
-  revalidatePath('/admin/dashboard/articles');
+  revalidatePath('/admin/articles');
 
   return success({});
 }
