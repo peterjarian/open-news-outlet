@@ -20,6 +20,8 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
 import { auth } from '@/lib/auth';
 import {
@@ -39,6 +41,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { authClient } from '@/lib/auth/client';
 import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
 
 type AdminSidebarProps = {
   user: typeof auth.$Infer.Session.user;
@@ -96,6 +99,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { setTheme, theme } = useTheme();
 
   async function handleSignOut() {
     const res = await authClient.signOut();
@@ -161,9 +165,11 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
                 Theme
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
-                <DropdownMenuItem>Light</DropdownMenuItem>
-                <DropdownMenuItem>Dark</DropdownMenuItem>
-                <DropdownMenuItem>System</DropdownMenuItem>
+                <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+                  <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuItem onClick={handleSignOut}>

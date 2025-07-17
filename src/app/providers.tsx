@@ -1,5 +1,6 @@
 'use client';
 
+import { ThemeProvider } from '@/providers/theme';
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -41,8 +42,10 @@ export function Providers({ children }: { children: ReactNode }) {
   const queryClient = getQueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <NuqsAdapter>{children}</NuqsAdapter>
-    </QueryClientProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <QueryClientProvider client={queryClient}>
+        <NuqsAdapter>{children}</NuqsAdapter>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
