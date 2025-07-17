@@ -76,7 +76,7 @@ export function ArticleSidebar() {
   }
 
   return (
-    <div className="space-y-4 rounded-lg border bg-white p-4 dark:bg-gray-950">
+    <div className="space-y-4 rounded-lg border p-4">
       <div className="space-y-3">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
