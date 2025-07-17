@@ -21,7 +21,6 @@ import { archiveArticle, deleteArticle } from '@/actions/articles';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { getStatusColor, getWordCount, calculateReadTime } from '@/lib/article';
-import { ArticleStatus } from '@/lib/drizzle/schema';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -29,6 +28,7 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { ArticleStatus } from '@/types';
 
 export function ArticleSidebar() {
   const { article, setArticle, setChanged } = useArticle();

@@ -35,6 +35,7 @@ import {
   LogOut,
   ChevronUp,
   SunMoon,
+  CircleUser,
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -42,6 +43,7 @@ import clsx from 'clsx';
 import { authClient } from '@/lib/auth/client';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
+import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
 
 type AdminSidebarProps = {
   user: typeof auth.$Infer.Session.user;
@@ -90,6 +92,16 @@ const menuItems = [
         title: 'Settings',
         url: '/admin/settings',
         icon: Settings,
+      },
+    ],
+  },
+  {
+    title: 'Account',
+    items: [
+      {
+        title: 'Profile',
+        url: '/admin/profile',
+        icon: CircleUser,
       },
     ],
   },
@@ -155,9 +167,11 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            <DropdownMenuItem>
-              <User />
-              Profile
+            <DropdownMenuItem asChild>
+              <HoverPrefetchLink href="/admin/profile">
+                <User />
+                Profile
+              </HoverPrefetchLink>
             </DropdownMenuItem>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="items-center">

@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { failure, success } from '.';
 import { db } from '@/lib/drizzle';
-import { ArticleStatus, articleTable } from '@/lib/drizzle/schema';
+import { articleTable } from '@/lib/drizzle/schema';
 import { tryCatch } from '@/lib/try-catch';
 import { slugify } from '@/lib/utils';
 import {
@@ -16,6 +16,7 @@ import {
 import DOMPurify from 'isomorphic-dompurify';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { ArticleStatus } from '@/types';
 
 export async function createArticle(article: CreateArticleData) {
   const validate = await createArticleSchema.safeParseAsync(article);

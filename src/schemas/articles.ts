@@ -1,4 +1,4 @@
-import { ArticleStatus } from '@/lib/drizzle/schema';
+import { ArticleStatus } from '@/types';
 import { JSONContent } from '@tiptap/core';
 import z from 'zod';
 

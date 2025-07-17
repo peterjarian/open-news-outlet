@@ -1,8 +1,8 @@
+import { ArticleStatus } from '@/types';
 import { generateHTML, JSONContent } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import { htmlToText } from 'html-to-text';
 import countWords from 'words-count';
-import { ArticleStatus } from './drizzle/schema';
 
 export function getWordCount(content: JSONContent) {
   const text = htmlToText(generateHTML(content, [StarterKit]));

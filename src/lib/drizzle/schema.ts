@@ -1,3 +1,4 @@
+import { ArticleStatus, SocialAccount } from '@/types';
 import { JSONContent } from '@tiptap/react';
 import {
   AnyPgColumn,
@@ -11,11 +12,6 @@ import {
   pgEnum,
 } from 'drizzle-orm/pg-core';
 
-export enum ArticleStatus {
-  CONCEPT = 'concept',
-  PUBLISHED = 'published',
-}
-
 export function enumToPgEnum<T extends Record<string, string | number>>(
   myEnum: T,
 ): [T[keyof T], ...T[keyof T][]] {
@@ -23,6 +19,8 @@ export function enumToPgEnum<T extends Record<string, string | number>>(
 }
 
 export const statusEnum = pgEnum('status', enumToPgEnum(ArticleStatus));
+
+export const socialPlatformEnum = pgEnum('platform', enumToPgEnum(SocialAccount));
 
 export const categoryTable = pgTable('categories', {
   id: serial().primaryKey(),
@@ -54,6 +52,7 @@ export const articleTable = pgTable('articles', {
 export const userTable = pgTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
+  bylineName: text(),
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified')
     .$defaultFn(() => false)
@@ -66,9 +65,20 @@ export const userTable = pgTable('user', {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
   role: text('role'),
-  banned: boolean('banned'),
-  banReason: text('ban_reason'),
-  banExpires: timestamp('ban_expires'),
+});
+
+export const socialPlatformTable = pgTable('socialPlatform', {
+  id: serial().primaryKey(),
+  platform: socialPlatformEnum(),
+  userId: text()
+    .notNull()
+    .references(() => userTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp()
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: timestamp()
+    .$defaultFn(() => new Date())
+    .notNull(),
 });
 
 export const sessionTable = pgTable('session', {
