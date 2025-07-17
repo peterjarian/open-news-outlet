@@ -16,7 +16,10 @@ export function HoverPrefetchLink({
       href={href}
       prefetch={active ? null : false}
       onTouchStart={() => setActive(true)}
-      onMouseDown={() => setActive(true)}
+      onMouseDown={() => {
+        console.log('Prefetching');
+        setActive(true);
+      }}
     >
       {children}
     </Link>

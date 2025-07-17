@@ -3,6 +3,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -11,8 +12,37 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, FileText, FolderOpen, Image, Users, Settings } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from '@/components/ui/dropdown-menu';
+import { auth } from '@/lib/auth';
+import {
+  LayoutDashboard,
+  FileText,
+  FolderOpen,
+  Image,
+  Users,
+  Settings,
+  User,
+  LogOut,
+  ChevronUp,
+  SunMoon,
+} from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import clsx from 'clsx';
+import { authClient } from '@/lib/auth/client';
+import { toast } from 'sonner';
+
+type AdminSidebarProps = {
+  user: typeof auth.$Infer.Session.user;
+};
 
 const menuItems = [
   {
@@ -62,12 +92,21 @@ const menuItems = [
   },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  async function handleSignOut() {
+    const res = await authClient.signOut();
+    if (res.error) return toast.success(res.error.message);
+    router.push('/');
+    router.refresh();
+  }
 
   return (
     <Sidebar>
-      <SidebarHeader className="flex h-16 items-center border-b px-4"></SidebarHeader>
+      <SidebarHeader className="flex h-16 items-center border-b px-4" />
       <SidebarContent>
         {menuItems.map((group) => (
           <SidebarGroup key={group.title}>
@@ -92,6 +131,48 @@ export function AdminSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooter className="border-t p-2">
+        <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+          <DropdownMenuTrigger asChild>
+            <button className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-3 rounded-lg p-2 text-left">
+              <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full">
+                <User className="h-4 w-4" />
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <div className="truncate text-sm font-medium">{user.name}</div>
+                <div className="text-muted-foreground truncate text-xs">{user.email}</div>
+              </div>
+              <ChevronUp
+                className={clsx(
+                  'size-4 transition-transform duration-200',
+                  userMenuOpen && 'rotate-180',
+                )}
+              />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuItem>
+              <User />
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="items-center">
+                <SunMoon className="text-muted-foreground mr-2 h-4 w-4" />
+                Theme
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>Light</DropdownMenuItem>
+                <DropdownMenuItem>Dark</DropdownMenuItem>
+                <DropdownMenuItem>System</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuItem onClick={handleSignOut}>
+              <LogOut />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
