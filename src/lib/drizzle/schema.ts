@@ -57,6 +57,7 @@ export const userTable = pgTable('user', {
   emailVerified: boolean('email_verified')
     .$defaultFn(() => false)
     .notNull(),
+  isPublicProfile: boolean().notNull().default(false),
   image: text('image'),
   createdAt: timestamp('created_at')
     .$defaultFn(() => /* @__PURE__ */ new Date())

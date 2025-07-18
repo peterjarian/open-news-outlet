@@ -4,29 +4,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Camera } from 'lucide-react';
-import { type UpdateUserData } from '@/schemas/users';
 import { useUser } from '@/hooks/use-user';
 
 export function ProfileImage() {
-  const { user } = useUser();
-  const [profileImage, setProfileImage] = useState(
-    user.image || '/placeholder.svg?height=120&width=120',
-  );
-  const { watch, setValue } = useFormContext<UpdateUserData>();
-  const name = watch('name') || user.name;
+  const { user, setChanged } = useUser();
+  const { setValue } = useFormContext();
+  const [preview, setPreview] = useState<string | null>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        setProfileImage(imageUrl);
-        setValue('image', imageUrl);
-      };
-      reader.readAsDataURL(file);
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setPreview(URL.createObjectURL(selectedFile));
+      setValue('image', selectedFile, { shouldDirty: true });
+      setChanged(true);
     }
-  };
+  }
 
   return (
     <Card>
@@ -37,9 +29,9 @@ export function ProfileImage() {
       <CardContent className="flex items-center space-x-6">
         <div className="relative">
           <Avatar className="h-24 w-24">
-            <AvatarImage src={profileImage || '/placeholder.svg'} alt="Profile" />
+            <AvatarImage src={preview || user.image || undefined} alt="Profile" />
             <AvatarFallback className="text-lg">
-              {name
+              {user.name
                 ?.split(' ')
                 .map((n: string) => n[0])
                 .join('')}
@@ -55,7 +47,7 @@ export function ProfileImage() {
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={handleImageUpload}
+              onChange={handleFileChange}
             />
           </label>
         </div>

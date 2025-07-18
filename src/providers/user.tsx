@@ -2,13 +2,13 @@
 
 import { userTable } from '@/lib/drizzle/schema';
 import { InferSelectModel } from 'drizzle-orm';
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useState, useMemo } from 'react';
 
 type User = InferSelectModel<typeof userTable>;
 
 type UserContextType = {
   user: User;
-  setUser: (article: User) => void;
+  setUser: (user: User) => void;
   changed: boolean;
   setChanged: (changed: boolean) => void;
 };
@@ -22,18 +22,16 @@ type UserProviderProps = {
 
 export function UserProvider({ initialUser, children }: UserProviderProps) {
   const [changed, setChanged] = useState(false);
-  const [user, setUser] = useState<User>(initialUser);
+  const [currentUser, setCurrentUser] = useState<User>(initialUser);
 
-  return (
-    <UserContext.Provider
-      value={{
-        user,
-        setUser,
-        changed,
-        setChanged,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  const contextValue = useMemo(() => {
+    return {
+      user: currentUser,
+      setUser: setCurrentUser,
+      changed,
+      setChanged,
+    };
+  }, [currentUser, changed, setChanged]);
+
+  return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
 }

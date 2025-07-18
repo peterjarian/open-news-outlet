@@ -1,31 +1,106 @@
-import { UserProvider } from '@/providers/user';
-import PageClient from './page-client';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { db } from '@/lib/drizzle';
-import { userTable } from '@/lib/drizzle/schema';
-import { eq } from 'drizzle-orm';
-import { tryCatch } from '@/lib/try-catch';
+'use client';
 
-export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
+import { AdminPageContainer } from '@/components/admin/container';
+import { AdminPageHeader, AdminPageHeaderContent } from '@/components/admin/page-header';
+import { createBreadcrumb } from '@/components/ui/breadcrumb';
+import { useForm } from 'react-hook-form';
+import { PersonalInformation } from './_components/personal-information';
+import { ProfileImage } from './_components/profile-image';
+import { SocialPlatforms } from './_components/social-platforms';
+import { UpdateUserData, updateUserSchema } from '@/schemas/users';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUser } from '@/hooks/use-user';
+import { updateUser } from '@/actions/users';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { LoadingSpinner } from '@/components/common/loading-spinner';
+import { Save } from 'lucide-react';
+import { Form } from '@/components/ui/form';
+
+export default function Page() {
+  const { user, setUser } = useUser();
+  const [savingUser, setSavingUser] = useState(false);
+
+  const form = useForm<UpdateUserData>({
+    resolver: zodResolver(updateUserSchema),
+    defaultValues: {
+      name: user.name,
+      bylineName: user.bylineName || undefined,
+      image: undefined,
+      isPublicProfile: user.isPublicProfile,
+      socialPlatforms: undefined,
+    },
   });
 
-  if (!session) return null;
+  const { isDirty } = form.formState;
 
-  const { data: users, error } = await tryCatch(
-    db.select().from(userTable).where(eq(userTable.id, session.user.id)).limit(1),
-  );
+  useEffect(() => {
+    if (!isDirty && savingUser) {
+      setSavingUser(false);
+    }
+  }, [isDirty, savingUser]);
 
-  if (error || !users[0]) {
-    console.log('[PROFILE] Failed to fetch user data:', error);
-    return null;
+  async function handleUserSave() {
+    setSavingUser(true);
+
+    const data = form.getValues();
+    const res = await updateUser(user.id, data);
+
+    if (res.error) {
+      toast.error(res.error);
+      setSavingUser(false);
+      return;
+    }
+
+    toast.success('Updates saved!');
+
+    const updatedUser = {
+      ...user,
+      isPublicProfile: data.isPublicProfile ?? user.isPublicProfile,
+      image: res.data?.image ?? user.image,
+    };
+
+    setUser(updatedUser);
+    form.reset({
+      name: updatedUser.name,
+      bylineName: updatedUser.bylineName || undefined,
+      image: undefined,
+      isPublicProfile: updatedUser.isPublicProfile,
+      socialPlatforms: undefined,
+    });
   }
 
   return (
-    <UserProvider initialUser={users[0]}>
-      <PageClient />
-    </UserProvider>
+    <>
+      <AdminPageHeader className="space-x-2">
+        <AdminPageHeaderContent>
+          {createBreadcrumb([{ label: 'Profile', isCurrent: true }])}
+          <Button
+            size="sm"
+            disabled={!isDirty || savingUser}
+            onClick={form.handleSubmit(handleUserSave)}
+          >
+            {savingUser ? (
+              <LoadingSpinner />
+            ) : (
+              <>
+                <Save />
+                <span>Save</span>
+              </>
+            )}
+          </Button>
+        </AdminPageHeaderContent>
+      </AdminPageHeader>
+      <AdminPageContainer>
+        <Form {...form}>
+          <div className="space-y-4 md:space-y-6">
+            <ProfileImage />
+            <PersonalInformation />
+            <SocialPlatforms />
+          </div>
+        </Form>
+      </AdminPageContainer>
+    </>
   );
 }

@@ -23,7 +23,6 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
-import { auth } from '@/lib/auth';
 import {
   LayoutDashboard,
   FileText,
@@ -38,16 +37,14 @@ import {
   CircleUser,
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { authClient } from '@/lib/auth/client';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
-
-type AdminSidebarProps = {
-  user: typeof auth.$Infer.Session.user;
-};
+import { useUser } from '@/hooks/use-user';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const menuItems = [
   {
@@ -107,11 +104,16 @@ const menuItems = [
   },
 ];
 
-export function AdminSidebar({ user }: AdminSidebarProps) {
+export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { user } = useUser();
   const { setTheme, theme } = useTheme();
+
+  useEffect(() => {
+    console.log(user.image);
+  }, [user.image]);
 
   async function handleSignOut() {
     const res = await authClient.signOut();
@@ -132,13 +134,13 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <a
+                      <HoverPrefetchLink
                         href={item.url}
                         className={pathname === item.url ? 'bg-accent text-accent-foreground' : ''}
                       >
                         <item.icon />
                         <span>{item.title}</span>
-                      </a>
+                      </HoverPrefetchLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -151,8 +153,25 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
         <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <DropdownMenuTrigger asChild>
             <button className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-3 rounded-lg p-2 text-left">
-              <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full">
-                <User className="h-4 w-4" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-full">
+                <Avatar className="ring-border h-8 w-8 ring-1">
+                  {user.image ? (
+                    <AvatarImage src={user.image} alt={user.name || user.email || 'User'} />
+                  ) : null}
+                  <AvatarFallback>
+                    {user.name ? (
+                      user.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                    ) : user.email ? (
+                      user.email[0].toUpperCase()
+                    ) : (
+                      <User className="h-4 w-4" />
+                    )}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <div className="flex-1 overflow-hidden">
                 <div className="truncate text-sm font-medium">{user.name}</div>
