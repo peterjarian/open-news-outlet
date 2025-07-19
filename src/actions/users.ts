@@ -27,7 +27,7 @@ export async function updateUser(id: string, input: UpdateUserData) {
   let newImageUrl = null;
   let oldImageKey = null;
 
-  if (validate.data.image) {
+  if (validate.data.image !== undefined) {
     const { data: currentUser, error: fetchError } = await tryCatch(
       db.select({ image: userTable.image }).from(userTable).where(eq(userTable.id, id)),
     );
@@ -40,14 +40,19 @@ export async function updateUser(id: string, input: UpdateUserData) {
       oldImageKey = getKeyFromUrl(currentUser[0].image);
     }
 
-    newImageUrl = await uploadFileToBucket('avatars', validate.data.image);
-    if (!newImageUrl) return failure('Failed to upload image.');
+    // If image is null, we're removing it
+    // If image is a File, we're uploading a new one
+    if (validate.data.image) {
+      newImageUrl = await uploadFileToBucket('avatars', validate.data.image);
+      if (!newImageUrl) return failure('Failed to upload image.');
+    }
   }
 
   const updateData = {
     bylineName: input.bylineName,
     isPublicProfile: input.isPublicProfile,
     ...(newImageUrl && { image: newImageUrl }),
+    ...(validate.data.image === null && { image: null }),
   };
 
   const { data: userUpdateData, error: userUpdateError } = await tryCatch(

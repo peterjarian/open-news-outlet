@@ -154,7 +154,7 @@ export function AdminSidebar() {
           <DropdownMenuTrigger asChild>
             <button className="hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-3 rounded-lg p-2 text-left">
               <div className="flex h-8 w-8 items-center justify-center rounded-full">
-                <Avatar className="ring-border h-8 w-8 ring-1">
+                <Avatar className="ring-border h-8 w-8 ring-1" key={user.image || 'no-image'}>
                   {user.image ? (
                     <AvatarImage src={user.image} alt={user.name || user.email || 'User'} />
                   ) : null}

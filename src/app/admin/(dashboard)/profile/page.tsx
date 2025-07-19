@@ -55,7 +55,7 @@ export default function Page() {
       ...user,
       bylineName: data.bylineName ?? null,
       isPublicProfile: data.isPublicProfile ?? user.isPublicProfile,
-      image: res.data?.image ?? user.image,
+      image: res.data?.image !== undefined ? res.data.image : user.image,
     };
 
     setUser(updatedUser);
