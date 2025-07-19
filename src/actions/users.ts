@@ -11,8 +11,6 @@ import { getKeyFromUrl, removeFileFromBucket, uploadFileToBucket } from '@/lib/s
 import { eq } from 'drizzle-orm';
 
 export async function updateUser(id: string, input: UpdateUserData) {
-  console.log(input);
-
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -23,6 +21,10 @@ export async function updateUser(id: string, input: UpdateUserData) {
 
   const validate = await updateUserSchema.safeParseAsync(input);
   if (!validate.success) return failure(validate.error.issues[0].message);
+
+  if (validate.data.name && session.user.role !== 'admin') {
+    return failure('Only admins can change your name.');
+  }
 
   let newImageUrl = null;
   let oldImageKey = null;
@@ -40,8 +42,6 @@ export async function updateUser(id: string, input: UpdateUserData) {
       oldImageKey = getKeyFromUrl(currentUser[0].image);
     }
 
-    // If image is null, we're removing it
-    // If image is a File, we're uploading a new one
     if (validate.data.image) {
       newImageUrl = await uploadFileToBucket('avatars', validate.data.image);
       if (!newImageUrl) return failure('Failed to upload image.');
@@ -49,6 +49,7 @@ export async function updateUser(id: string, input: UpdateUserData) {
   }
 
   const updateData = {
+    name: input.name,
     bylineName: input.bylineName,
     isPublicProfile: input.isPublicProfile,
     ...(newImageUrl && { image: newImageUrl }),
@@ -69,4 +70,22 @@ export async function updateUser(id: string, input: UpdateUserData) {
   }
 
   return success(userUpdateData[0]);
+}
+
+export async function deleteUser(id: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || session.user.role !== 'admin') {
+    return failure('You are not allowed to delete this user.');
+  }
+
+  if (session.user.id === id) {
+    return failure("You're not allowed to delete yourself.");
+  }
+
+  await db.delete(userTable).where(eq(userTable.id, id));
+
+  return success({});
 }

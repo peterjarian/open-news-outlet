@@ -8,7 +8,6 @@ import { PersonalInformation } from './_components/personal-information';
 import { ProfileImage } from './_components/profile-image';
 import { UpdateUserData, updateUserSchema } from '@/schemas/users';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useUser } from '@/hooks/use-user';
 import { updateUser } from '@/actions/users';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -16,9 +15,10 @@ import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/common/loading-spinner';
 import { Save } from 'lucide-react';
 import { Form } from '@/components/ui/form';
+import { useUserProvider } from '@/hooks/users/use-user-provider';
 
 export default function Page() {
-  const { user, setUser } = useUser();
+  const { user, setUser } = useUserProvider();
   const [savingUser, setSavingUser] = useState(false);
 
   const form = useForm<UpdateUserData>({

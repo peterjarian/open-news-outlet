@@ -2,16 +2,12 @@ import { AdminPageContainer } from '@/components/admin/container';
 import { AdminPageHeader, AdminPageHeaderContent } from '@/components/admin/page-header';
 import { createBreadcrumb } from '@/components/ui/breadcrumb';
 import InviteUserDialog from './_components/invite-user-dialog';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { unauthorized } from 'next/navigation';
+import { PageClient } from './page-client';
+import { db } from '@/lib/drizzle';
+import { userTable } from '@/lib/drizzle/schema';
 
 export default async function Page() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session || session.user.role !== 'admin') return unauthorized();
+  const users = await db.select().from(userTable);
 
   return (
     <>
@@ -21,7 +17,9 @@ export default async function Page() {
           <InviteUserDialog />
         </AdminPageHeaderContent>
       </AdminPageHeader>
-      <AdminPageContainer></AdminPageContainer>
+      <AdminPageContainer>
+        <PageClient users={users} />
+      </AdminPageContainer>
     </>
   );
 }
