@@ -64,15 +64,17 @@ export function ProfileImage() {
             <Camera />
             Upload
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRemove}
-            className="flex items-center gap-2"
-          >
-            <X />
-            Remove
-          </Button>
+          {displayImage && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRemove}
+              className="flex items-center gap-2"
+            >
+              <X />
+              Remove
+            </Button>
+          )}
           <input
             ref={fileInputRef}
             type="file"
