@@ -44,7 +44,7 @@ import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { useUserProvider } from '@/hooks/providers/use-user-provider';
+import { useUserProvider } from '@/hooks/users/use-user-provider';
 
 export function AdminSidebar() {
   const pathname = usePathname();

@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Camera, X } from 'lucide-react';
-import { useUserProvider } from '@/hooks/providers/use-user-provider';
+import { useUserProvider } from '@/hooks/users/use-user-provider';
 
 export function ProfileImage() {
   const { user, setChanged } = useUserProvider();

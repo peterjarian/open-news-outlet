@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { type UpdateUserData } from '@/schemas/users';
-import { useUserProvider } from '@/hooks/providers/use-user-provider';
+import { useUserProvider } from '@/hooks/users/use-user-provider';
 
 export function PersonalInformation() {
   const { watch, control } = useFormContext<UpdateUserData>();
