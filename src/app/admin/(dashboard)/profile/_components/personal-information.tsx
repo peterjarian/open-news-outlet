@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { type UpdateUserData } from '@/schemas/users';
 import { useUser } from '@/hooks/use-user';
 
 export function PersonalInformation() {
-  const { register, watch, control } = useFormContext<UpdateUserData>();
+  const { watch, control } = useFormContext<UpdateUserData>();
   const isPublicProfile = watch('isPublicProfile');
   const { user } = useUser();
 
@@ -22,7 +23,6 @@ export function PersonalInformation() {
           <Label htmlFor="name">Full Name</Label>
           <Input
             id="name"
-            {...register('name')}
             placeholder="Enter your full name"
             defaultValue={user.name}
             disabled
@@ -32,18 +32,22 @@ export function PersonalInformation() {
             Only administrators can modify your full name
           </p>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="byline-name">Byline Name</Label>
-          <Input
-            id="byline-name"
-            {...register('bylineName')}
-            placeholder="Enter your byline name"
-            defaultValue={user.bylineName || ''}
-          />
-          <p className="text-muted-foreground text-sm">
-            This is how your name will appear in article bylines
-          </p>
-        </div>
+        <FormField
+          control={control}
+          name="bylineName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Byline Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your byline name" {...field} />
+              </FormControl>
+              <FormMessage />
+              <p className="text-muted-foreground text-sm">
+                This is how your name will appear in article bylines
+              </p>
+            </FormItem>
+          )}
+        />
         <div className="bg-muted/50 flex items-center justify-between rounded-lg border p-4">
           <div className="space-y-1">
             <Label htmlFor="public-profile" className="text-base font-medium">

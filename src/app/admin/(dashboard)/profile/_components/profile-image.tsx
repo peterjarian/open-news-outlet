@@ -26,7 +26,7 @@ export function ProfileImage() {
         <CardTitle>Profile Image</CardTitle>
         <CardDescription>Upload and manage your profile photo</CardDescription>
       </CardHeader>
-      <CardContent className="flex items-center space-x-6">
+      <CardContent>
         <div className="relative">
           <Avatar className="h-24 w-24">
             <AvatarImage src={preview || user.image || undefined} alt="Profile" />

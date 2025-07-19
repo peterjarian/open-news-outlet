@@ -24,7 +24,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   if (!session) return null;
 
   const { data: users, error } = await tryCatch(
-    db.select().from(userTable).where(eq(userTable.id, session.user.id)).limit(1),
+    db.select().from(userTable).where(eq(userTable.id, session.user.id)),
   );
 
   if (error || !users[0]) {
@@ -32,8 +32,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     return null;
   }
 
+  const user = users[0];
+
   return (
-    <UserProvider initialUser={users[0]}>
+    <UserProvider initialUser={user}>
       <SidebarProvider defaultOpen={defaultOpen}>
         <AdminSidebar />
         <SidebarInset>{children}</SidebarInset>

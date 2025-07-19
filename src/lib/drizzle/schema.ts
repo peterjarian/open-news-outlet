@@ -1,4 +1,4 @@
-import { ArticleStatus, SocialAccount } from '@/types';
+import { ArticleStatus } from '@/types';
 import { JSONContent } from '@tiptap/react';
 import {
   AnyPgColumn,
@@ -19,8 +19,6 @@ export function enumToPgEnum<T extends Record<string, string | number>>(
 }
 
 export const statusEnum = pgEnum('status', enumToPgEnum(ArticleStatus));
-
-export const socialPlatformEnum = pgEnum('platform', enumToPgEnum(SocialAccount));
 
 export const categoryTable = pgTable('categories', {
   id: serial().primaryKey(),
@@ -66,20 +64,6 @@ export const userTable = pgTable('user', {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
   role: text('role'),
-});
-
-export const socialPlatformTable = pgTable('socialPlatform', {
-  id: serial().primaryKey(),
-  platform: socialPlatformEnum(),
-  userId: text()
-    .notNull()
-    .references(() => userTable.id, { onDelete: 'cascade' }),
-  createdAt: timestamp()
-    .$defaultFn(() => new Date())
-    .notNull(),
-  updatedAt: timestamp()
-    .$defaultFn(() => new Date())
-    .notNull(),
 });
 
 export const sessionTable = pgTable('session', {

@@ -36,6 +36,20 @@
       "when": 1752832707144,
       "tag": "0004_common_nighthawk",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1752926041907,
+      "tag": "0005_slippery_marten_broadcloak",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1752927873666,
+      "tag": "0006_fair_microchip",
+      "breakpoints": true
     }
   ]
 }

@@ -11,6 +11,8 @@ import { getKeyFromUrl, removeFileFromBucket, uploadFileToBucket } from '@/lib/s
 import { eq } from 'drizzle-orm';
 
 export async function updateUser(id: string, input: UpdateUserData) {
+  console.log(input);
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -43,7 +45,6 @@ export async function updateUser(id: string, input: UpdateUserData) {
   }
 
   const updateData = {
-    name: input.name,
     bylineName: input.bylineName,
     isPublicProfile: input.isPublicProfile,
     ...(newImageUrl && { image: newImageUrl }),

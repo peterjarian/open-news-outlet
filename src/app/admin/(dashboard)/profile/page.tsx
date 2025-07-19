@@ -6,7 +6,6 @@ import { createBreadcrumb } from '@/components/ui/breadcrumb';
 import { useForm } from 'react-hook-form';
 import { PersonalInformation } from './_components/personal-information';
 import { ProfileImage } from './_components/profile-image';
-import { SocialPlatforms } from './_components/social-platforms';
 import { UpdateUserData, updateUserSchema } from '@/schemas/users';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUser } from '@/hooks/use-user';
@@ -25,11 +24,9 @@ export default function Page() {
   const form = useForm<UpdateUserData>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
-      name: user.name,
-      bylineName: user.bylineName || undefined,
+      bylineName: user.bylineName ?? undefined,
       image: undefined,
       isPublicProfile: user.isPublicProfile,
-      socialPlatforms: undefined,
     },
   });
 
@@ -41,10 +38,9 @@ export default function Page() {
     }
   }, [isDirty, savingUser]);
 
-  async function handleUserSave() {
+  async function handleUserSave(data: UpdateUserData) {
     setSavingUser(true);
 
-    const data = form.getValues();
     const res = await updateUser(user.id, data);
 
     if (res.error) {
@@ -57,18 +53,14 @@ export default function Page() {
 
     const updatedUser = {
       ...user,
+      bylineName: data.bylineName ?? null,
       isPublicProfile: data.isPublicProfile ?? user.isPublicProfile,
       image: res.data?.image ?? user.image,
     };
 
     setUser(updatedUser);
-    form.reset({
-      name: updatedUser.name,
-      bylineName: updatedUser.bylineName || undefined,
-      image: undefined,
-      isPublicProfile: updatedUser.isPublicProfile,
-      socialPlatforms: undefined,
-    });
+
+    form.reset(data);
   }
 
   return (
@@ -97,7 +89,6 @@ export default function Page() {
           <div className="space-y-4 md:space-y-6">
             <ProfileImage />
             <PersonalInformation />
-            <SocialPlatforms />
           </div>
         </Form>
       </AdminPageContainer>
