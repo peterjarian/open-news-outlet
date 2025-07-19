@@ -43,14 +43,14 @@ import { authClient } from '@/lib/auth/client';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
-import { useUser } from '@/hooks/use-user';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { useUserProvider } from '@/hooks/providers/use-user-provider';
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { user } = useUser();
+  const { user } = useUserProvider();
   const { setTheme, theme } = useTheme();
 
   const menuItems = [

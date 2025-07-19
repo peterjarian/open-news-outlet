@@ -5,12 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { type UpdateUserData } from '@/schemas/users';
-import { useUser } from '@/hooks/use-user';
+import { useUserProvider } from '@/hooks/providers/use-user-provider';
 
 export function PersonalInformation() {
   const { watch, control } = useFormContext<UpdateUserData>();
   const isPublicProfile = watch('isPublicProfile');
-  const { user } = useUser();
+  const { user } = useUserProvider();
 
   return (
     <Card>

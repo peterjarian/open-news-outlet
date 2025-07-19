@@ -4,10 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Camera, X } from 'lucide-react';
-import { useUser } from '@/hooks/use-user';
+import { useUserProvider } from '@/hooks/providers/use-user-provider';
 
 export function ProfileImage() {
-  const { user, setChanged } = useUser();
+  const { user, setChanged } = useUserProvider();
   const { setValue, watch } = useFormContext();
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
