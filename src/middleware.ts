@@ -9,19 +9,27 @@ export async function middleware(request: NextRequest) {
 
   // Because middelware runs in the edge runtime, we can't use the auth.api object
   // We need to fetch the session manually with a fetch libary.
-  const { data } = await betterFetch<Session>('/api/auth/get-session', {
+  const { data: session } = await betterFetch<Session>('/api/auth/get-session', {
     baseURL: origin,
     headers: {
       cookie: request.headers.get('cookie') || '',
     },
   });
 
-  if (data && pathname === '/admin/sign-in') {
-    return NextResponse.redirect(new URL('/admin', request.url));
+  if (session && pathname === '/admin/sign-in') {
+    return NextResponse.redirect(new URL('/admin', origin));
   }
 
-  if (!data && pathname !== '/admin/sign-in') {
-    return NextResponse.redirect(new URL('/admin/sign-in', request.url));
+  if (!session && pathname !== '/admin/sign-in') {
+    return NextResponse.redirect(new URL('/admin/sign-in', origin));
+  }
+
+  if (
+    session &&
+    session.user.role !== 'admin' &&
+    (pathname === '/admin/users' || pathname === '/admin/settings')
+  ) {
+    return NextResponse.redirect(new URL('/admin', origin));
   }
 
   return NextResponse.next();

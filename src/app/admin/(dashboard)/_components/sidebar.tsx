@@ -37,7 +37,7 @@ import {
   CircleUser,
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import { authClient } from '@/lib/auth/client';
 import { toast } from 'sonner';
@@ -46,64 +46,6 @@ import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
 import { useUser } from '@/hooks/use-user';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
-const menuItems = [
-  {
-    title: 'Dashboard',
-    items: [
-      {
-        title: 'Overview',
-        url: '/admin',
-        icon: LayoutDashboard,
-      },
-    ],
-  },
-  {
-    title: 'Content',
-    items: [
-      {
-        title: 'Articles',
-        url: '/admin/articles',
-        icon: FileText,
-      },
-      {
-        title: 'Categories',
-        url: '/admin/categories',
-        icon: FolderOpen,
-      },
-      {
-        title: 'Media',
-        url: '/admin/media',
-        icon: Image,
-      },
-    ],
-  },
-  {
-    title: 'Admin',
-    items: [
-      {
-        title: 'Users',
-        url: '/admin/users',
-        icon: Users,
-      },
-      {
-        title: 'Settings',
-        url: '/admin/settings',
-        icon: Settings,
-      },
-    ],
-  },
-  {
-    title: 'Account',
-    items: [
-      {
-        title: 'Profile',
-        url: '/admin/profile',
-        icon: CircleUser,
-      },
-    ],
-  },
-];
-
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -111,9 +53,67 @@ export function AdminSidebar() {
   const { user } = useUser();
   const { setTheme, theme } = useTheme();
 
-  useEffect(() => {
-    console.log(user.image);
-  }, [user.image]);
+  const menuItems = [
+    {
+      title: 'Dashboard',
+      items: [
+        {
+          title: 'Overview',
+          url: '/admin',
+          icon: LayoutDashboard,
+        },
+      ],
+    },
+    {
+      title: 'Content',
+      items: [
+        {
+          title: 'Articles',
+          url: '/admin/articles',
+          icon: FileText,
+        },
+        {
+          title: 'Categories',
+          url: '/admin/categories',
+          icon: FolderOpen,
+        },
+        {
+          title: 'Media',
+          url: '/admin/media',
+          icon: Image,
+        },
+      ],
+    },
+    ...(user.role === 'admin'
+      ? [
+          {
+            title: 'Admin',
+            items: [
+              {
+                title: 'Users',
+                url: '/admin/users',
+                icon: Users,
+              },
+              {
+                title: 'Settings',
+                url: '/admin/settings',
+                icon: Settings,
+              },
+            ],
+          },
+        ]
+      : []),
+    {
+      title: 'Account',
+      items: [
+        {
+          title: 'Profile',
+          url: '/admin/profile',
+          icon: CircleUser,
+        },
+      ],
+    },
+  ];
 
   async function handleSignOut() {
     const res = await authClient.signOut();
