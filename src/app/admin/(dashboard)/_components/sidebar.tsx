@@ -45,6 +45,7 @@ import { useTheme } from 'next-themes';
 import { HoverPrefetchLink } from '@/components/common/hover-prefetch-link';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useUserProvider } from '@/hooks/users/use-user-provider';
+import { getAvatarPlaceholder } from '@/lib/utils';
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -158,19 +159,7 @@ export function AdminSidebar() {
                   {user.image ? (
                     <AvatarImage src={user.image} alt={user.name || user.email || 'User'} />
                   ) : null}
-                  <AvatarFallback>
-                    {user.name ? (
-                      user.name
-                        .split(' ')
-                        .map((n) => n[0])
-                        .join('')
-                        .toUpperCase()
-                    ) : user.email ? (
-                      user.email[0].toUpperCase()
-                    ) : (
-                      <User className="h-4 w-4" />
-                    )}
-                  </AvatarFallback>
+                  <AvatarFallback>{getAvatarPlaceholder(user.name)}</AvatarFallback>
                 </Avatar>
               </div>
               <div className="flex-1 overflow-hidden">

@@ -14,3 +14,11 @@ export function slugify(name: string) {
     .replace(/^-+|-+$/g, '')
     .replace(/-{2,}/g, '-');
 }
+
+export function getAvatarPlaceholder(name: string): string {
+  if (!name) return '';
+  const words = name.trim().split(/\s+/);
+  return words.length
+    ? words[0].slice(0, 2).toUpperCase()
+    : (words[0][0] + words[1][0]).toUpperCase();
+}

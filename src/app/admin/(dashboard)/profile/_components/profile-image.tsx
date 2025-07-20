@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Camera, X } from 'lucide-react';
 import { useUserProvider } from '@/hooks/users/use-user-provider';
+import { getAvatarPlaceholder } from '@/lib/utils';
 
 export function ProfileImage() {
   const { user, setChanged } = useUserProvider();
@@ -46,12 +47,7 @@ export function ProfileImage() {
       <CardContent className="space-y-4">
         <Avatar className="h-24 w-24">
           <AvatarImage src={displayImage || undefined} alt="Profile picture" />
-          <AvatarFallback className="text-lg">
-            {user.name
-              ?.split(' ')
-              .map((name: string) => name[0])
-              .join('')}
-          </AvatarFallback>
+          <AvatarFallback className="text-lg">{getAvatarPlaceholder(user.name)}</AvatarFallback>
         </Avatar>
 
         <div className="flex space-x-2">
